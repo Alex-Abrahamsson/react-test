@@ -11,27 +11,21 @@ function App() {
     fetch("https://localhost:7289/CardGames/" + gameMode)
       .then((response) => response.json())
       .then((json) => setData(json));
-    console.log(gameMode);
+      console.log(data);
   }, [gameMode]);
 
   const getCards = () => {
-    return data.map((card, index) => {
+    return data.map((cardHand, index) => {
       return (
-        <Container
-          style={{
-            width:"150px",
-            height:"200px",
-            margin: "5px",
-            backgroundColor: "peru",
-          }}
-          key={index}
-        >
-          <Row>
-            <Badge style={{display: "flex", flexDirection: "column", alignItems: "center"}}variant="primary">{card.type}</Badge>
-          </Row>
-          <Row style={{ height:"50%",paddingTop:"50px"}}>
-            <Badge style={{display: "flex", flexDirection: "column", alignItems: "center"}}variant="primary">{card.value}</Badge>
-          </Row>
+        <Container style={{width:"300px",height:"200px",margin: "5px",backgroundColor: "#0004"}} key={index}>
+          <Badge style={{color:"red"}}>{cardHand.playerName}</Badge>
+          {cardHand.cards.map((card, index) => {
+            return (
+              <Row key={index}>
+                <Badge>{card.type} - {card.value}</Badge>
+              </Row>
+            );
+          })}
         </Container>
       );
     });
