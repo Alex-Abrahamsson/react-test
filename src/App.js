@@ -2,52 +2,70 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { Badge, Button, Col, Container, Row } from "react-bootstrap";
 
+
+
 function App() {
-  const [gameMode, setGameMode] = useState(null);
+  const [gameMode, setGameMode] = useState("");
   const [data, setData] = useState([]);
+  const [cards, setCards] = useState([]);
 
 
-  useEffect(() => {
-    fetch("https://localhost:7289/CardGames/" + gameMode)
+  async function FetchData(gameMode) {
+    await fetch("https://localhost:7289/CardGames/"+gameMode)
       .then((response) => response.json())
-      .then((json) => setData(json));
-      console.log(data);
-  }, [gameMode]);
+      .then((data) => setData(data));
+    setGameMode(gameMode);
+    console.log(data);
+    }
 
-  const getCards = () => {
-    return data.map((cardHand, index) => {
-      return (
-        <Container style={{width:"300px",height:"200px",margin: "5px",backgroundColor: "#0004"}} key={index}>
-          <Badge style={{color:"red"}}>{cardHand.playerName}</Badge>
-          {cardHand.cards.map((card, index) => {
-            return (
-              <Row key={index}>
-                <Badge>{card.type} - {card.value}</Badge>
-              </Row>
-            );
-          })}
-        </Container>
+    const PrintPlayerAndScore = () => {
+      return data.map((player, index) => {
+        return (
+          <Col key={index}>
+            <Badge pill variant="primary">
+              {player.playerName}
+            </Badge>
+          </Col>
+        );
+      }
       );
-    });
-  };
+    }
+
+
+
+
 
   return (
-    <Container style={{border: "1px solid yellow"}} className="App-header">
+    <Container className="App">
       <Row>
-        <Col style={{ border:"1px solid red", display:"flex", flexDirection:"column"}}>
-          <Row style={{ height: "7vh", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <Badge>{gameMode}</Badge>
-          </Row>
-          <Row style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-            <Button className="gmBtn"variant="primary"onClick={() => setGameMode("BlackJack")}>BlackJack</Button>
-            <Button className="gmBtn"variant="primary"onClick={() => setGameMode("HighestCard")}>Highest Card</Button>
-            <Button className="gmBtn"variant="primary"onClick={() => setGameMode("Poker")}>Poker</Button>
-          </Row>
-          {getCards()}
+        <Col>
+          <h1>Choose GameMode</h1>
         </Col>
       </Row>
+      <Row>
+        <Col style={{ height:"45px"}}>
+          <h3 className="gmText">{gameMode}</h3>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm>
+          <Button className="gmBtn" onClick={() => FetchData("HighestCard")}>HighestCard</Button>
+        </Col>
+        <Col sm>
+          <Button className="gmBtn" onClick={() => FetchData("BlackJack")}>BlackJack</Button>
+        </Col>
+        <Col sm>
+          <Button className="gmBtn" onClick={() => FetchData("Poker")}>Poker</Button> 
+        </Col>
+      </Row>
+      <Row>
+        {PrintPlayerAndScore()}
+      </Row>
+      <Row>
+        {console.log("CARDS HERE!!")}
+      </Row>
     </Container>
-  );
+  )
 }
 
 export default App;
