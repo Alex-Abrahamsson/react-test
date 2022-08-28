@@ -6,30 +6,94 @@ import { Badge, Button, Col, Container, Row } from "react-bootstrap";
 
 function App() {
   const [gameMode, setGameMode] = useState("");
-  const [data, setData] = useState([]);
-  const [cards, setCards] = useState([]);
 
+const url = "https://localhost:7289/Alex/CardGames/";
 
-  async function FetchData(gameMode) {
-    await fetch("https://localhost:7289/CardGames/"+gameMode)
-      .then((response) => response.json())
-      .then((data) => setData(data));
-    setGameMode(gameMode);
-    console.log(data);
+async function myFetch(url, method = null, body = null) {
+  try {
+    let res = await fetch(url, {
+      method: method ?? "GET",
+      headers: { "content-type": "application/json" },
+      body: body ? JSON.stringify(body) : null,
+    });
+
+    if (res.ok) {
+      console.log("Request successful");
+
+      if (method == "PUT" || method == "DELETE")
+        //request is successful, but WebAPI is not send a response, so I return the body which represenst the effect on the database
+        return body;
+
+      //get the data from server
+      let data = await res.json();
+      //JSON.stringify(data);
+      return data;
+    } else {
+      //typcially you would log an error instead
+      console.log(`Failed to recieved data from server: ${res.status}`);
+      alert(`Failed to recieved data from server: ${res.status}`);
     }
+  } catch (err) {
+    //typcially you would log an error instead
+    console.log(`Failed to recieved data from server: ${err.message}`);
+    alert(`Failed to recieved data from server: ${err.message}`);
+  }
+}
 
-    const PrintPlayerAndScore = () => {
-      return data.map((player, index) => {
-        return (
-          <Col key={index}>
-            <Badge pill variant="primary">
-              {player.playerName}
-            </Badge>
-          </Col>
-        );
+const [fetchData, setFetchData] = useState([]);
+const [cards, setCards] = useState([]);
+
+
+async function getPlayData() {
+  myFetch(`${url}PlayGame`)
+    .then((data) => {
+      setFetchData(data);
+      let cards = [];
+      for (let i = 0; i < data.length; i++) {
+        cards.push(data[i].cards);
       }
-      );
+      setCards(cards);
+    }).catch((err) => {
+      console.log(err);
     }
+    );
+}
+
+
+// (async () => {
+//   //Here I write all the code to be executed at script top level, c# main level
+
+//   //Start a game
+//   const responseStart = await myFetch(`${url}StartGame?gameType=HighCard`);
+//   if (responseStart) {
+//     console.log(responseStart);
+//   }
+
+//   //Deal a card
+//   const card = await myFetch(`${url}DealCard`);
+//   if (card) {
+//     console.log(card);
+//   }
+
+//   //Deal 5 cards DealCards?nrOfCards=5
+//   const cards = await myFetch(`${url}DealCards?nrOfCards=5`);
+//   if (cards) {
+//     console.log(cards);
+//   }
+
+//   //WinningCards
+//   const winners = await myFetch(`${url}WinningCards`, "POST", cards);
+//   if (winners) {
+//     console.log(winners);
+//   }
+
+//   //End game
+//   const responseEnd = await myFetch(`${url}EndGame`);
+//   if (responseEnd) {
+//     console.log(responseEnd);
+//   }
+// })();
+
 
 
 
@@ -49,20 +113,33 @@ function App() {
       </Row>
       <Row>
         <Col sm>
-          <Button className="gmBtn" onClick={() => FetchData("HighestCard")}>HighestCard</Button>
+          <Button className="gmBtn" onClick={() => myFetch(`${url}StartGame?gameType=HighestCard`)}>Start Game</Button>
         </Col>
         <Col sm>
-          <Button className="gmBtn" onClick={() => FetchData("BlackJack")}>BlackJack</Button>
+          <Button className="gmBtn" onClick={() => getPlayData()}>Deal 5 Cards</Button>
         </Col>
         <Col sm>
-          <Button className="gmBtn" onClick={() => FetchData("Poker")}>Poker</Button> 
+          <Button className="gmBtn" onClick={() => myFetch(`${url}EndGame`)}>End Game</Button> 
         </Col>
       </Row>
       <Row>
-        {PrintPlayerAndScore()}
+        {fetchData.map((card, index) => (
+          <Col sm key={index}>
+            <Badge pill variant="primary">{card.playerName}</Badge>
+            <Badge pill variant="primary">{card.sum}</Badge>
+          </Col>
+        ))}
       </Row>
       <Row>
-        {console.log("CARDS HERE!!")}
+        {cards.map((card,index) => card.forEach(element => {
+          console.log(element);
+          return (
+            <Col sm key={index}>
+              <Badge pill variant="primary">{element.value}</Badge>
+              <Badge pill variant="primary">{element.type}</Badge>
+            </Col>
+          )
+        }))}
       </Row>
     </Container>
   )
