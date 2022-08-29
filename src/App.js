@@ -104,46 +104,35 @@ function App() {
       </Row>
       <Row>
         <Col sm>
-          <Button
-            className="gmBtn"
-            onClick={() => myFetch(`${url}StartGame?gameType=HighestCard`)}
-          >
-            Start Game
-          </Button>
+          <Button className="gmBtn"onClick={() => myFetch(`${url}StartGame?gameType=HighestCard`)}>Start Game</Button>
         </Col>
         <Col sm>
-          <Button className="gmBtn" onClick={() => getPlayData()}>
-            Deal 5 Cards
-          </Button>
+          <Button className="gmBtn" onClick={() => getPlayData()}> Deal 5 Cards</Button>
         </Col>
         <Col sm>
-          <Button className="gmBtn" onClick={() => myFetch(`${url}EndGame`)}>
-            End Game
-          </Button>
+          <Button className="gmBtn" onClick={() => myFetch(`${url}EndGame`)}>End Game</Button>
         </Col>
       </Row>
       <Row>
-        {fetchData.map((card, index) => (
+        {fetchData.map((card, index) => ( 
           <Col sm key={index}>
-            <Badge pill variant="primary">
-              {card.playerName}
-            </Badge>
-            <Badge pill variant="primary">
-              {card.sum}
-            </Badge>
+            <Badge pill variant="primary">{card.playerName}</Badge>
+            <Badge pill variant="primary">{card.sum}</Badge>
           </Col>
         ))}
       </Row>
       <Row>
         {cards.map((card, index) =>
           card.map((element) => (
-            <Col sm key={index}>
-              <Badge pill variant="primary">
-                {element.value}
-              </Badge>
-              <Badge pill variant="primary">
-                {element.type}
-              </Badge>
+            <Col sm={3} key={index}>
+              <Container style={{border: '1px solid', minHeight:"200px", maxWidth:"150px", paddingTop:"40px"}}>
+                <Row>
+                  <h1>{element.type}</h1>
+                </Row>
+                <Row>
+                  <h1>{element.value}</h1>
+                </Row>
+              </Container>
             </Col>
           ))
         )}
