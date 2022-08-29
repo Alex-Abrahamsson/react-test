@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Badge, Button, Col, Container, Row } from "react-bootstrap";
 
 function App() {
-  const [gameMode, setGameMode] = useState("");
+  const [gameMode, setGameMode] = useState("Highest Card");
 
   const url = "https://localhost:7289/Alex/CardGames/";
 
@@ -50,6 +50,7 @@ function App() {
           cards.push(data[i].cards);
         }
         setCards(cards);
+        myFetch(`${url}EndGame`);
       })
       .catch((err) => {
         console.log(err);
@@ -102,17 +103,14 @@ function App() {
           <h3 className="gmText">{gameMode}</h3>
         </Col>
       </Row>
-      <Row>
-        <Col sm>
-          <Button className="gmBtn"onClick={() => myFetch(`${url}StartGame?gameType=HighestCard`)}>Start Game</Button>
-        </Col>
-        <Col sm>
-          <Button className="gmBtn" onClick={() => getPlayData()}> Deal 5 Cards</Button>
-        </Col>
-        <Col sm>
-          <Button className="gmBtn" onClick={() => myFetch(`${url}EndGame`)}>End Game</Button>
-        </Col>
-      </Row>
+        <Container style={{ display:"flex", flexDirection:"column", alignItems: "center"}}>
+          <Row>
+            <Button className="gmBtn"onClick={() => myFetch(`${url}StartGame?gameType=HighestCard`)}>Start Game</Button>
+          </Row>
+          <Row>
+            <Button className="gmBtn" onClick={() => getPlayData()}> Deal 5 Cards</Button>
+          </Row>
+        </Container>
       <Row>
         {fetchData.map((card, index) => ( 
           <Col sm key={index}>
