@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Badge, Button, Col, Container, Row } from "react-bootstrap";
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
       if (res.ok) {
         console.log("Request successful");
 
-        if (method == "PUT" || method == "DELETE")
+        if (method === "PUT" || method === "DELETE")
           //request is successful, but WebAPI is not send a response, so I return the body which represenst the effect on the database
           return body;
 
@@ -91,6 +91,7 @@ function App() {
   //   }
   // })();
 
+
   return (
     <Container className="App">
       <Row>
@@ -116,19 +117,24 @@ function App() {
           <Col sm key={index}>
             <Badge pill variant="primary">{card.playerName}</Badge>
             <Badge pill variant="primary">{card.sum}</Badge>
+            {card.isWinner == true ? (<p style={{color:"red"}}>Looser</p>) : (<p style={{color:"lime"}}>Winner</p>)}
           </Col>
         ))}
       </Row>
       <Row>
-        {cards.map((card, index) =>
+        {cards.map((card, index) => 
           card.map((element) => (
             <Col sm={3} key={index}>
-              <Container style={{border: '1px solid', minHeight:"200px", maxWidth:"150px", paddingTop:"40px"}}>
+              <Container style={{border: '2px solid', minHeight:"200px", maxWidth:"150px", paddingTop:"40px"}}>
                 <Row>
-                  <h1>{element.type}</h1>
+                  { element.type == "♥" ? (<h1 style={{color:"red"}}>{element.type}</h1>)
+                  : element.type == "♦" ? (<h1 style={{color:"red"}}>{element.type}</h1>) 
+                  : (<h1>{element.type}</h1>)}
                 </Row>
                 <Row>
-                  <h1>{element.value}</h1>
+                  { element.type == "♥" ? (<h1 style={{color:"red"}}>{element.value}</h1>)
+                  : element.type == "♦" ? (<h1 style={{color:"red"}}>{element.value}</h1>) 
+                  : (<h1>{element.value}</h1>)}
                 </Row>
               </Container>
             </Col>
