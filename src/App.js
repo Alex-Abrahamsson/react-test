@@ -4,8 +4,15 @@ import { Badge, Button, Col, Container, Row } from "react-bootstrap";
 
 function App() {
   const [gameMode, setGameMode] = useState("Highest Card");
-
   const url = "https://localhost:7289/Alex/CardGames/";
+  const [fetchData, setFetchData] = useState([]);
+  const [cards, setCards] = useState([]);
+  const [playerHand, setPlayerHand] = useState([]);
+  const [computerHand, setComputerHand] = useState([]);
+
+
+
+
 
   async function myFetch(url, method = null, body = null) {
     try {
@@ -38,9 +45,6 @@ function App() {
     }
   }
 
-  const [fetchData, setFetchData] = useState([]);
-  const [cards, setCards] = useState([]);
-
   async function getPlayData() {
     myFetch(`${url}PlayGame`)
       .then((data) => {
@@ -57,39 +61,22 @@ function App() {
       });
   }
 
-  // (async () => {
-  //   //Here I write all the code to be executed at script top level, c# main level
 
-  //   //Start a game
-  //   const responseStart = await myFetch(`${url}StartGame?gameType=HighCard`);
-  //   if (responseStart) {
-  //     console.log(responseStart);
-  //   }
+  function SortCardHands() {
+    for (let i = 0; i < fetchData.length; i++) {
+      if (fetchData[i].playerName === "Player") {
+        playerHand.push(fetchData[i].cards);
+      } else {
+        computerHand.push(fetchData[i].cards);
+      }
+    }
+  }
 
-  //   //Deal a card
-  //   const card = await myFetch(`${url}DealCard`);
-  //   if (card) {
-  //     console.log(card);
-  //   }
 
-  //   //Deal 5 cards DealCards?nrOfCards=5
-  //   const cards = await myFetch(`${url}DealCards?nrOfCards=5`);
-  //   if (cards) {
-  //     console.log(cards);
-  //   }
 
-  //   //WinningCards
-  //   const winners = await myFetch(`${url}WinningCards`, "POST", cards);
-  //   if (winners) {
-  //     console.log(winners);
-  //   }
 
-  //   //End game
-  //   const responseEnd = await myFetch(`${url}EndGame`);
-  //   if (responseEnd) {
-  //     console.log(responseEnd);
-  //   }
-  // })();
+
+
 
 
   return (
@@ -110,6 +97,9 @@ function App() {
           </Row>
           <Row>
             <Button className="gmBtn" onClick={() => getPlayData()}> Deal 5 Cards</Button>
+          </Row>
+          <Row>
+            <Button className="gmBtn" onClick={() => SortCardHands()}> Show Cards</Button>
           </Row>
         </Container>
       <Row>
