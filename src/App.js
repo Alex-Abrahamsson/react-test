@@ -1,6 +1,9 @@
 import "./App.css";
 import { useState } from "react";
 import { Badge, Button, Col, Container, Row } from "react-bootstrap";
+import PlayingCard from "./components/PlayingCardComponent/PlayingCardComponent";
+import EmptyCard from "./components/PlayingCardComponent/EmptyCardComponent";
+import { useEffect } from "react";
 
 function App() {
   const [gameMode, setGameMode] = useState("Highest Card");
@@ -9,6 +12,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [playerHand, setPlayerHand] = useState([]);
   const [computerHand, setComputerHand] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
 
 
@@ -70,9 +74,8 @@ function App() {
         computerHand.push(fetchData[i].cards);
       }
     }
+    setLoaded(true);
   }
-
-
 
 
 
@@ -82,12 +85,7 @@ function App() {
   return (
     <Container className="App">
       <Row>
-        <Col>
-          <h1>Choose GameMode</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col style={{ height: "45px" }}>
+        <Col style={{ height: "45px", marginTop:"50px" }}>
           <h3 className="gmText">{gameMode}</h3>
         </Col>
       </Row>
@@ -102,35 +100,59 @@ function App() {
             <Button className="gmBtn" onClick={() => SortCardHands()}> Show Cards</Button>
           </Row>
         </Container>
-      <Row>
-        {fetchData.map((card, index) => ( 
-          <Col sm key={index}>
-            <Badge pill variant="primary">{card.playerName}</Badge>
-            <Badge pill variant="primary">{card.sum}</Badge>
-            {card.isWinner == true ? (<p style={{color:"red"}}>Looser</p>) : (<p style={{color:"lime"}}>Winner</p>)}
+        <Row>
+          <Col>
+            <h1>Player</h1>
           </Col>
-        ))}
-      </Row>
-      <Row>
-        {cards.map((card, index) => 
-          card.map((element) => (
-            <Col sm={3} key={index}>
-              <Container style={{border: '2px solid', minHeight:"200px", maxWidth:"150px", paddingTop:"40px"}}>
-                <Row>
-                  { element.type == "♥" ? (<h1 style={{color:"red"}}>{element.type}</h1>)
-                  : element.type == "♦" ? (<h1 style={{color:"red"}}>{element.type}</h1>) 
-                  : (<h1>{element.type}</h1>)}
-                </Row>
-                <Row>
-                  { element.type == "♥" ? (<h1 style={{color:"red"}}>{element.value}</h1>)
-                  : element.type == "♦" ? (<h1 style={{color:"red"}}>{element.value}</h1>) 
-                  : (<h1>{element.value}</h1>)}
-                </Row>
-              </Container>
+          <Col>
+            <h1>Computer</h1>
+          </Col>
+        </Row>
+          {loaded ? 
+          <Row>
+            <Col>
+              <Row>
+                {playerHand.map((cards) => 
+                  cards.map((card, index) => (
+                    <Col key={index}>
+                      <PlayingCard type={card.type} value={card.value} />
+                    </Col>
+                  ))
+                )}
+              </Row>
             </Col>
-          ))
-        )}
-      </Row>
+            <Col>
+              <Row>
+                {computerHand.map((cards) =>
+                  cards.map((card, index) => (
+                    <Col key={index}>
+                      <PlayingCard type={card.type} value={card.value} />
+                    </Col>
+                  ))
+                )}
+              </Row>
+            </Col>
+          </Row>
+          : <Row>
+              <Col>
+                <Row>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                </Row>
+              </Col>
+              <Col>
+                <Row>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                  <Col><EmptyCard /></Col>
+                </Row>
+              </Col>
+            </Row>}
     </Container>
   );
 }

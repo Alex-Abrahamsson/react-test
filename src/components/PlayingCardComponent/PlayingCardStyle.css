@@ -1,0 +1,30 @@
+.CardOutline{
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100px;
+    height: 160px;
+    display: inline-block;
+    margin: 5px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #f5f5f5;
+}
+.EmptyCardOutline{
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100px;
+    height: 160px;
+    display: inline-block;
+    margin: 5px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: peru;
+}
+
+.RedCardTxT{
+    color: red;
+}
+
+.BlackCardTxT{
+    color: black;
+}
