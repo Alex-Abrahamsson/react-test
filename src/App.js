@@ -1,18 +1,18 @@
 import "./App.css";
 import { useState } from "react";
-import { Badge, Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import PlayingCard from "./components/PlayingCardComponent/PlayingCardComponent";
 import EmptyCard from "./components/PlayingCardComponent/EmptyCardComponent";
-import { useEffect } from "react";
 
 function App() {
-  const [gameMode, setGameMode] = useState("Highest Card");
   const url = "https://localhost:7289/Alex/CardGames/";
+  const [gameMode, setGameMode] = useState("Highest Card");
   const [fetchData, setFetchData] = useState([]);
   const [cards, setCards] = useState([]);
   const [playerHand, setPlayerHand] = useState([]);
   const [computerHand, setComputerHand] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [winner, setWinner] = useState("");
 
 
 
@@ -25,25 +25,17 @@ function App() {
         headers: { "content-type": "application/json" },
         body: body ? JSON.stringify(body) : null,
       });
-
       if (res.ok) {
         console.log("Request successful");
-
         if (method === "PUT" || method === "DELETE")
-          //request is successful, but WebAPI is not send a response, so I return the body which represenst the effect on the database
           return body;
-
-        //get the data from server
         let data = await res.json();
-        //JSON.stringify(data);
         return data;
       } else {
-        //typcially you would log an error instead
         console.log(`Failed to recieved data from server: ${res.status}`);
         alert(`Failed to recieved data from server: ${res.status}`);
       }
     } catch (err) {
-      //typcially you would log an error instead
       console.log(`Failed to recieved data from server: ${err.message}`);
       alert(`Failed to recieved data from server: ${err.message}`);
     }
@@ -59,6 +51,9 @@ function App() {
         }
         setCards(cards);
         myFetch(`${url}EndGame`);
+        setLoaded(false);
+        setPlayerHand([]);
+        setComputerHand([]);
       })
       .catch((err) => {
         console.log(err);
@@ -75,6 +70,11 @@ function App() {
       }
     }
     setLoaded(true);
+    for (let index = 0; index < fetchData.length; index++) {
+      if (fetchData[index].isWinner === true) {
+        setWinner(fetchData[index].playerName);
+      }
+    }
   }
 
 
@@ -102,16 +102,16 @@ function App() {
         </Container>
         <Row>
           <Col>
-            <h1>Player</h1>
+            {winner == "Player" ? <h1 className="winner">Player Wins</h1> : <h1 className="looser">Player</h1>}
           </Col>
           <Col>
-            <h1>Computer</h1>
+            {winner == "Player" ? <h1 className="looser">Computer</h1> : <h1 className="winner">Computer Wins</h1>}
           </Col>
         </Row>
           {loaded ? 
           <Row>
             <Col>
-              <Row>
+              <Row className="PlayerTable">
                 {playerHand.map((cards) => 
                   cards.map((card, index) => (
                     <Col key={index}>
@@ -122,7 +122,7 @@ function App() {
               </Row>
             </Col>
             <Col>
-              <Row>
+              <Row className="ComputerTable">
                 {computerHand.map((cards) =>
                   cards.map((card, index) => (
                     <Col key={index}>
@@ -135,7 +135,7 @@ function App() {
           </Row>
           : <Row>
               <Col>
-                <Row>
+                <Row className="PlayerTable">
                   <Col><EmptyCard /></Col>
                   <Col><EmptyCard /></Col>
                   <Col><EmptyCard /></Col>
@@ -144,7 +144,7 @@ function App() {
                 </Row>
               </Col>
               <Col>
-                <Row>
+                <Row className="ComputerTable">
                   <Col><EmptyCard /></Col>
                   <Col><EmptyCard /></Col>
                   <Col><EmptyCard /></Col>
@@ -153,6 +153,12 @@ function App() {
                 </Row>
               </Col>
             </Row>}
+            <Row>
+              <Col>
+                <h1>*The winner is*</h1>
+                <h1>{winner}</h1>
+                </Col>
+            </Row>
     </Container>
   );
 }

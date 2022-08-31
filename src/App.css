@@ -20,3 +20,19 @@
   font-size: 32px;
   font-weight: bold;
 }
+.PlayerTable{
+  background-color: #0009;
+  border-Right: 2px solid black;
+  padding: 10px;
+}
+.ComputerTable{
+  background-color: #0009;
+  border-Left: 2px solid black;
+  padding: 10px;
+}
+.winner{
+  color: lime;
+}
+.looser{
+  color: red;
+}
