@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import PlayingCard from "./components/PlayingCardComponent/PlayingCardComponent";
 import EmptyCard from "./components/PlayingCardComponent/EmptyCardComponent";
+import Test from "./components/TestComp/Test";
+
 
 function App() {
   const url = "https://localhost:7289/Alex/CardGames/";
@@ -157,6 +159,7 @@ function App() {
               <Col>
                 <h1>*The winner is*</h1>
                 <h1>{winner}</h1>
+                <Test text="Hello" onClick={() => console.log("Hej")}/>
                 </Col>
             </Row>
     </Container>
